@@ -3,7 +3,7 @@
 -- @copyright 2020 LiosK
 -- @license Apache-2.0
 
-local json = { _VERSION = "1.0.0" }
+local json = { _VERSION = "1.0.1" }
 
 function json.encode(value)
   local encoder = json["encode_" .. type(value)] or json.encode_other
@@ -74,12 +74,12 @@ function json.encode_array(value)
 end
 
 function json.encode_object(value)
-  local result = ""
+  local result = {}
   for k, v in pairs(value) do
     local str_key = json.encode_string(tostring(k))
-    result = result .. "," .. str_key .. ":" .. json.encode(v)
+    table.insert(result, str_key .. ":" .. json.encode(v))
   end
-  return "{" .. result:sub(2) .. "}"
+  return "{" .. table.concat(result, ",") .. "}"
 end
 
 function json.encode_other(value)
